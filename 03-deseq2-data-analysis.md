@@ -83,9 +83,26 @@ dds_keep <- dds[keep,]
 dds_de <- DESeq(dds_keep)
 res_de <- results(dds_de)
 
-# S4 object to data frame
-res_de_df <- data.frames(res_de)
 
+# S4 object to data frame
+res_de_df <- data.frame(res_de)
+# conda install conda-forge::r-devtools
+# devtools::install_github("BioSenior/ggVolcano")
+
+
+
+library(ggVolcano)
+
+data_df <- add_regulate(
+    res_de_df, log2FC_name = "log2FoldChange",
+    fdr_name = "padj",log2FC = 1, fdr = 0.05
+)
+
+data_df$row <- rownames(data_df)
+ggvolcano(data_df,
+    x = "log2FoldChange", y = "padj",
+    label = "row", label_number = 10, 
+    output = FALSE)
 
 
 
